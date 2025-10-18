@@ -3405,6 +3405,25 @@ func (m *ObjectStorage) validate(all bool) error {
 
 	}
 
+	if m.SecurityToken != nil {
+
+		if m.GetSecurityToken() != "" {
+
+			if utf8.RuneCountInString(m.GetSecurityToken()) < 1 {
+				err := ObjectStorageValidationError{
+					field:  "SecurityToken",
+					reason: "value length must be at least 1 runes",
+				}
+				if !all {
+					return err
+				}
+				errors = append(errors, err)
+			}
+
+		}
+
+	}
+
 	if len(errors) > 0 {
 		return ObjectStorageMultiError(errors)
 	}
@@ -3886,3 +3905,4 @@ var _ interface {
 } = PieceValidationError{}
 
 var _Piece_Digest_Pattern = regexp.MustCompile("^(md5:[a-fA-F0-9]{32}|sha1:[a-fA-F0-9]{40}|sha256:[a-fA-F0-9]{64}|sha512:[a-fA-F0-9]{128}|blake3:[a-fA-F0-9]{64}|crc32:[a-fA-F0-9]+)$")
+
